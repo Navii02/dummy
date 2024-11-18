@@ -16,6 +16,7 @@ function Category() {
         </div>
         <Videicards/>
     </div>
+    <h3 className='text-danger'>No Categeory added Yet....</h3>
     </>
   )
 }

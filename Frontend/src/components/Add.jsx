@@ -9,7 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-function Add() {
+function Add({setAddStatus}) {
     const [show, setShow] = useState(false);
     const [videoDetails,setvideoDetails] = useState({
       caption:'',
@@ -33,6 +33,7 @@ function Add() {
   if(result.status>=200 && result.status<300) {
     toast.success('Video added successfully');
     handleClose()
+    setAddStatus(result)
 
      
   }
@@ -49,6 +50,7 @@ function Add() {
     if(result.status>=200 && result.status<300) {
       toast.success('Video added successfully');
       handleClose()
+      setAddStatus(result)
   
        
     }

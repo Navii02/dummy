@@ -5,28 +5,57 @@ import Modal from 'react-bootstrap/Modal';
 import { useState } from 'react';
 import {faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { removeVideoApi,addHistoryApi } from '../services/allApi';
 
-function Videicards() {
+function Videicards({videoDetails,setDeleteStatus}) {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleShow =async () => {
+    setShow(true);
+    const caption=videoDetails?.caption
+    const url=videoDetails?.embededUrl
+    const time=new Date()
+    const timeStamp=new Intl.DateTimeFormat("en-GB",{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(time)
+    //console.log(timeStamp);
+    
+
+    const reqBody={
+      caption,
+      url,
+      timeStamp
+
+    }
+     const result= await addHistoryApi(reqBody)
+     //console.log(result);
+    
+
+  }
+
+  const handleDelete = async(id)=>{
+    const result= await removeVideoApi(id);
+    console.log(result);
+    if(result.status>=200&&result.status<300){
+    setDeleteStatus(true)
+    }
+    
+  } 
 
   return (
     <>
-    <Card style={{ width: '100%' }} className='p-1' onClick={handleShow}>
-      <Card.Img variant="top" heigh src="https://th.bing.com/th/id/OIP.NFoNJeWWgxCgka2-WVUmOgHaKf?rs=1&pid=ImgDetMain" />
+    <Card style={{ width: '100%' }} className='p-1'>
+      <Card.Img  onClick={handleShow} variant="top" heigh src={videoDetails?.imgUrl} style={{height:'300px'}} />
       <Card.Body className='d-flex justify-content-between'>
-        <Card.Title>Card Title</Card.Title>
+        <Card.Text>{videoDetails?.caption}</Card.Text>
         
-        <Button variant="danger"><FontAwesomeIcon icon={faTrash} /></Button>
+        <Button onClick={()=>handleDelete(videoDetails?.id)} variant="danger"><FontAwesomeIcon icon={faTrash} /></Button>
       </Card.Body>
     </Card>
     <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Movie Title</Modal.Title>
+          <Modal.Title>{videoDetails?.caption}</Modal.Title>
         </Modal.Header>
-        <Modal.Body><iframe width="100%" height="514" src="https://www.youtube.com/embed/B2UBMTA57JI?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></Modal.Body>
+        <Modal.Body><iframe width="100%" height="514" src={`${videoDetails?.embededUrl}?autoplay=1`} title="YouTube video player"  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe></Modal.Body>
      
       </Modal>
     </>
